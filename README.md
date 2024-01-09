@@ -4,6 +4,8 @@
 
 This project is a demonstration of a pixel-perfect implementation of the Dukaan Dashboard UI, as originally outlined in a tweet by Subhash Sir.
 
+the website is live and deployed on Netlify. You can check it out [here](https://dukaan-pixelperfdash.netlify.app).
+
 The project is bootstrapped using Vite and developed with React, incorporating Tailwind CSS for styling. Code-splitting practices and reusable components have been employed to reduce code repetition.
 
 ## Features
