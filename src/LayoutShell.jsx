@@ -1,12 +1,57 @@
-import React from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Sidebar from "./components/Sidebar";
+const hamburgerIcon = "/misc/burgermenu.svg";
 
 const LayoutShell = ({ children }) => {
-  const isDesktop = window.innerWidth > 768;
+  const [isDesktop, setIsDesktop] = useState(true);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // check for the width of the screen , if it is less than have to set the isDesktop to false and not render the sidebar component then
+
+  const useMediaQuery = (query) => {
+    const mql = useMemo(() => window.matchMedia(query));
+
+    const [match, setMatch] = useState(mql.matches);
+
+    useEffect(() => {
+      const handler = (e) => setMatch(e.matches);
+      mql.addListener(handler);
+
+      return () => {
+        mql.removeListener(handler);
+      };
+    }, [mql]);
+
+    return match;
+  };
+
+  const close = useMediaQuery("(max-width: 768px)");
+
+  const handleResize = useCallback(() => {
+    if (window.innerWidth < 768) {
+      setIsMobile(true);
+      setIsSidebarOpen(false); // Close sidebar when switching to mobile view
+    } else {
+      setIsMobile(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [handleResize]);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
   return (
     <>
-      {isDesktop ? (
+      {!close ? (
         <div className="flex w-full overflow-x-hidden">
           <div
             className="h-screen overflow-y-auto sidebar-scrollbar"
@@ -24,7 +69,9 @@ const LayoutShell = ({ children }) => {
           </div>
         </div>
       ) : (
-        <div>{children}</div>
+        <>
+          <div>{children}</div>
+        </>
       )}
     </>
   );
